@@ -1,14 +1,28 @@
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef KV_H
 #define KV_H
 
-typedef union value
+typedef enum value_type
 {
-    char  str[40];
-    int   i;
-    float f;
-    bool  b;
+    STRING,
+    INT,
+    FLOAT,
+    BOOL
+} value_type_t;
+
+typedef struct value
+{
+    value_type_t type;
+    union
+    {
+        char  str[40];
+        int   i;
+        float f;
+        bool  b;
+    } value;
 } value_t;
 
 typedef struct kv

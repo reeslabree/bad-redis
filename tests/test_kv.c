@@ -9,12 +9,12 @@ int test_create_str()
 {
     const char* KEY = "test key";
 
-    value_t val = {.str = "test string"};
+    value_t val = {.type = STRING, .value.str = "test string"};
     kv_t*   kv  = kv_create(KEY, &val);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
     ASSERT(strcmp(kv->key, KEY) == 0, "incorrect key");
-    ASSERT(strcmp(kv->value.str, "test string") == 0, "incorrect value");
+    ASSERT(strcmp(kv->value.value.str, "test string") == 0, "incorrect value");
 
     kv_free(kv);
 
@@ -27,12 +27,12 @@ int test_create_int()
 {
     const char* KEY = "int key";
 
-    value_t val = {.i = 42};
+    value_t val = {.type = INT, .value.i = 42};
     kv_t*   kv  = kv_create(KEY, &val);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
     ASSERT(strcmp(kv->key, KEY) == 0, "incorrect key");
-    ASSERT(kv->value.i == 42, "incorrect value");
+    ASSERT(kv->value.value.i == 42, "incorrect value");
 
     kv_free(kv);
 
@@ -45,12 +45,12 @@ int test_create_float()
 {
     const char* KEY = "float key";
 
-    value_t val = {.f = 3.14f};
+    value_t val = {.type = FLOAT, .value.f = 3.14f};
     kv_t*   kv  = kv_create(KEY, &val);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
     ASSERT(strcmp(kv->key, KEY) == 0, "incorrect key");
-    ASSERT(kv->value.f == 3.14f, "incorrect value");
+    ASSERT(kv->value.value.f == 3.14f, "incorrect value");
 
     kv_free(kv);
 
@@ -63,12 +63,12 @@ int test_create_bool()
 {
     const char* KEY = "bool key";
 
-    value_t val = {.b = true};
+    value_t val = {.type = BOOL, .value.b = true};
     kv_t*   kv  = kv_create(KEY, &val);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
     ASSERT(strcmp(kv->key, KEY) == 0, "incorrect key");
-    ASSERT(kv->value.b == true, "incorrect value");
+    ASSERT(kv->value.value.b == true, "incorrect value");
 
     kv_free(kv);
 
@@ -81,27 +81,27 @@ int test_set()
 {
     const char* KEY = "set test key";
 
-    value_t val1 = {.i = 10};
+    value_t val1 = {.type = INT, .value.i = 10};
     kv_t*   kv   = kv_create(KEY, &val1);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
-    ASSERT(kv->value.i == 10, "initial value incorrect");
+    ASSERT(kv->value.value.i == 10, "initial value incorrect");
 
-    value_t val2 = {.i = 20};
+    value_t val2 = {.type = INT, .value.i = 20};
     kv_set(kv, &val2);
-    ASSERT(kv->value.i == 20, "set int value failed");
+    ASSERT(kv->value.value.i == 20, "set int value failed");
 
-    value_t val3 = {.f = 2.5f};
+    value_t val3 = {.type = FLOAT, .value.f = 2.5f};
     kv_set(kv, &val3);
-    ASSERT(kv->value.f == 2.5f, "set float value failed");
+    ASSERT(kv->value.value.f == 2.5f, "set float value failed");
 
-    value_t val4 = {.b = false};
+    value_t val4 = {.type = BOOL, .value.b = false};
     kv_set(kv, &val4);
-    ASSERT(kv->value.b == false, "set bool value failed");
+    ASSERT(kv->value.value.b == false, "set bool value failed");
 
-    value_t val5 = {.str = "new string"};
+    value_t val5 = {.type = STRING, .value.str = "new string"};
     kv_set(kv, &val5);
-    ASSERT(strcmp(kv->value.str, "new string") == 0, "set string value failed");
+    ASSERT(strcmp(kv->value.value.str, "new string") == 0, "set string value failed");
 
     kv_free(kv);
 
@@ -114,28 +114,28 @@ int test_get()
 {
     const char* KEY = "get test key";
 
-    value_t val1 = {.i = 100};
+    value_t val1 = {.type = INT, .value.i = 100};
     kv_t*   kv   = kv_create(KEY, &val1);
 
     ASSERT(kv != NULL, "kv_create returned NULL");
 
     value_t retrieved = kv_get(kv);
-    ASSERT(retrieved.i == 100, "get int value failed");
+    ASSERT(retrieved.value.i == 100, "get int value failed");
 
-    value_t val2 = {.f = 9.99f};
+    value_t val2 = {.type = FLOAT, .value.f = 9.99f};
     kv_set(kv, &val2);
     retrieved = kv_get(kv);
-    ASSERT(retrieved.f == 9.99f, "get float value failed");
+    ASSERT(retrieved.value.f == 9.99f, "get float value failed");
 
-    value_t val3 = {.b = true};
+    value_t val3 = {.type = BOOL, .value.b = true};
     kv_set(kv, &val3);
     retrieved = kv_get(kv);
-    ASSERT(retrieved.b == true, "get bool value failed");
+    ASSERT(retrieved.value.b == true, "get bool value failed");
 
-    value_t val4 = {.str = "get test"};
+    value_t val4 = {.type = STRING, .value.str = "get test"};
     kv_set(kv, &val4);
     retrieved = kv_get(kv);
-    ASSERT(strcmp(retrieved.str, "get test") == 0, "get string value failed");
+    ASSERT(strcmp(retrieved.value.str, "get test") == 0, "get string value failed");
 
     kv_free(kv);
 
@@ -148,7 +148,7 @@ int test_free()
 {
     const char* KEY = "free test key";
 
-    value_t val = {.i = 1};
+    value_t val = {.type = INT, .value.i = 1};
     kv_t*   kv  = kv_create(KEY, &val);
 
     ASSERT(kv != NULL, "kv_create returned NULL");

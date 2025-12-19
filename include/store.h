@@ -1,5 +1,8 @@
-#include "kv.h"
 #include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "kv.h"
 
 #ifndef STORE_H
 #define STORE_H
@@ -25,7 +28,7 @@ typedef struct kv_store
 kv_store_t*    kv_store_create(size_t capacity);
 void           kv_store_free(kv_store_t* store);
 const value_t* kv_store_get_key(kv_store_t* store, const char* key);
-void           kv_store_set_key(kv_store_t* store, const char* key, const value_t* val);
-void           kv_store_delete_key(kv_store_t* store, const char* key);
+void kv_store_set_key(kv_store_t* store, const char* key, const value_t* val);
+void kv_store_delete_key(kv_store_t* store, const char* key);
 
 #endif

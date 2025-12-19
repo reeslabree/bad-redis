@@ -1,3 +1,7 @@
+/**
+ * TODO: ADD THREAD SAFETY TESTS
+ */
+
 #include "../include/store.h"
 #include "utils.h"
 
@@ -42,7 +46,6 @@ int test_update()
 
     const value_t* retrieved = kv_store_get_key(store, "test");
     ASSERT(retrieved->i == 10, "get int value failed");
-
 
     value_t val2 = {.i = 20};
     kv_store_set_key(store, "test", &val2);

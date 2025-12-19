@@ -1,6 +1,4 @@
 #include "../include/kv.h"
-#include <stdlib.h>
-#include <string.h>
 
 kv_t* kv_create(const char* key, const value_t* val)
 {

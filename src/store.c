@@ -1,9 +1,4 @@
 #include "../include/store.h"
-#include "../include/kv.h"
-
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
 
 kv_store_t* kv_store_create(size_t capacity)
 {
