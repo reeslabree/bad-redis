@@ -1,6 +1,7 @@
 #include "kv.h"
 #include <float.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 #ifndef PROTOCOL_H
@@ -39,6 +40,12 @@ typedef struct request
         delete_request_t d;
     } detail;
 } request_t;
+
+typedef enum response
+{
+    OK,
+    NOT_FOUND
+} response_t;
 
 request_t* parse_request(const char* buf);
 size_t     format_response(const value_t value, char* buf, size_t buf_size);

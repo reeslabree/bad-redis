@@ -9,7 +9,7 @@
 static value_t* parse_value(const char* value_primitive)
 {
     value_t* val = malloc(sizeof(value_t));
-    int      len = strlen(value_primitive);
+    size_t   len = strlen(value_primitive);
 
     if (len > 2 && value_primitive[0] == '"' && value_primitive[len - 1] == '"')
     {
@@ -35,7 +35,7 @@ static value_t* parse_value(const char* value_primitive)
             val->value.b = false;
         }
     }
-    else if (strchr(value_primitive, ".") != NULL)
+    else if (strchr(value_primitive, '.') != NULL)
     {
         val->type = FLOAT;
 
@@ -68,21 +68,23 @@ error:
 
 request_t* parse_request(const char* buf)
 {
-    char* buf_clone = strdup(buf);
-    char* save_ptr;
+    char*    buf_clone = strdup(buf);
+    char*    save_ptr;
+    value_t* value = NULL;
 
     request_t* request = malloc(sizeof(request_t));
-    value_t*   value   = parse_request(buf);
 
-    if (value == NULL)
-        goto error;
-
-    char* cmd = strtok_r(buf_clone, " ", save_ptr);
+    char* cmd = strtok_r(buf_clone, " ", &save_ptr);
 
     if (strcmp(cmd, "PUT"))
     {
-        char* key = strtok_r(buf_clone, " ", save_ptr);
-        char* val = strtok_r(buf_clone, "\n", save_ptr);
+        char* key = strtok_r(buf_clone, " ", &save_ptr);
+        char* val = strtok_r(buf_clone, "\n", &save_ptr);
+
+        value = parse_value(val);
+
+        if (value == NULL)
+            goto error;
 
         if (!key || !val)
             goto error;
@@ -92,14 +94,14 @@ request_t* parse_request(const char* buf)
     }
     else if (strcmp(cmd, "GET"))
     {
-        char* key = strtok_r(buf_clone, "\n", save_ptr);
+        char* key = strtok_r(buf_clone, "\n", &save_ptr);
 
         if (!key)
             goto error;
     }
     else if (strcmp(cmd, "DELETE"))
     {
-        char* key = strtok_r(buf_clone, "\n", save_ptr);
+        char* key = strtok_r(buf_clone, "\n", &save_ptr);
 
         if (!key)
             goto error;

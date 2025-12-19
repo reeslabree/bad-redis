@@ -1,15 +1,30 @@
 #include "../include/kv.h"
 #include "../include/protocol.h"
+#include "../include/store.h"
+#include "../include/tcp.h"
 
+#include <signal.h>
 #include <stdio.h>
+
+#define PORT 49925
+
+static volatile sig_atomic_t running = 1;
+
+static void handle_sigint(int sig)
+{
+    (void)sig;
+    running = 0;
+}
 
 int main(void)
 {
-    request_action_t a = PUT;
+    signal(SIGINT, handle_sigint);
 
-    value_t val  = {.str = "cool value"};
-    kv_t*   kv_1 = kv_create("my special key", &val);
-    puts(kv_1->key);
-    puts(kv_1->value.str);
+    // int listen_fd = tcp_listen(PORT);
+
+    while (running)
+    {
+    }
+
     return 0;
 }
