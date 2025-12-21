@@ -44,7 +44,8 @@ typedef struct request
 typedef enum response
 {
     OK,
-    NOT_FOUND
+    NOT_FOUND,
+    ERROR
 } response_t;
 
 request_t* parse_request(const char* buf);

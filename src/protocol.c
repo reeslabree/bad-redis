@@ -1,4 +1,5 @@
 #include "../include/protocol.h"
+#include <string.h>
 
 /**
  * "\"string contents\"" -> parsed to char*
@@ -74,12 +75,12 @@ request_t* parse_request(const char* buf)
 
     request_t* request = malloc(sizeof(request_t));
 
-    char* cmd = strtok_r(buf_clone, " ", &save_ptr);
+    char* cmd = strtok_r(buf_clone, " \n", &save_ptr);
 
-    if (strcmp(cmd, "PUT"))
+    if (strcmp(cmd, "PUT") == 0)
     {
-        char* key = strtok_r(buf_clone, " ", &save_ptr);
-        char* val = strtok_r(buf_clone, "\n", &save_ptr);
+        char* key = strtok_r(save_ptr, " ", &save_ptr);
+        char* val = strtok_r(save_ptr, "\n", &save_ptr);
 
         value = parse_value(val);
 
@@ -92,16 +93,16 @@ request_t* parse_request(const char* buf)
         request->action       = PUT;
         request->detail.p.key = key;
     }
-    else if (strcmp(cmd, "GET"))
+    else if (strcmp(cmd, "GET") == 0)
     {
-        char* key = strtok_r(buf_clone, "\n", &save_ptr);
+        char* key = strtok_r(save_ptr, "\n", &save_ptr);
 
         if (!key)
             goto error;
     }
-    else if (strcmp(cmd, "DELETE"))
+    else if (strcmp(cmd, "DELETE") == 0)
     {
-        char* key = strtok_r(buf_clone, "\n", &save_ptr);
+        char* key = strtok_r(save_ptr, "\n", &save_ptr);
 
         if (!key)
             goto error;
