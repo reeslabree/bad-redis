@@ -12,6 +12,10 @@ BIN = $(BUILD_DIR)/badredis
 TESTS = $(wildcard tests/*.c)
 TEST_OBJ = $(patsubst tests/%.c,$(BUILD_DIR)/%.o,$(TESTS))
 
+# Default target
+.PHONY: all
+all: $(BIN)
+
 # Build directory
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)

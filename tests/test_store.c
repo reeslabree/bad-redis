@@ -24,11 +24,11 @@ int test_insert_and_get()
 {
     kv_store_t* store = kv_store_create(10);
     ASSERT(store != NULL, "kv_store_create returned NULL");
-    value_t val = {.i = 10};
+    value_t val = {.value.i = 10};
     kv_store_set_key(store, "test", &val);
 
     const value_t* retrieved = kv_store_get_key(store, "test");
-    ASSERT(retrieved->i == 10, "get int value failed");
+    ASSERT(retrieved->value.i == 10, "get int value failed");
 
     kv_store_free(store);
 
@@ -41,17 +41,17 @@ int test_update()
 {
     kv_store_t* store = kv_store_create(10);
     ASSERT(store != NULL, "kv_store_create returned NULL");
-    value_t val = {.i = 10};
+    value_t val = {.value.i = 10};
     kv_store_set_key(store, "test", &val);
 
     const value_t* retrieved = kv_store_get_key(store, "test");
-    ASSERT(retrieved->i == 10, "get int value failed");
+    ASSERT(retrieved->value.i == 10, "get int value failed");
 
-    value_t val2 = {.i = 20};
+    value_t val2 = {.value.i = 20};
     kv_store_set_key(store, "test", &val2);
 
     retrieved = kv_store_get_key(store, "test");
-    ASSERT(retrieved->i == 20, "get int value failed");
+    ASSERT(retrieved->value.i == 20, "get int value failed");
 
     kv_store_free(store);
 
@@ -64,7 +64,7 @@ int test_delete()
 {
     kv_store_t* store = kv_store_create(10);
     ASSERT(store != NULL, "kv_store_create returned NULL");
-    value_t val = {.i = 10};
+    value_t val = {.value.i = 10};
     kv_store_set_key(store, "test", &val);
 
     kv_store_delete_key(store, "test");

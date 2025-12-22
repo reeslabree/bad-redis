@@ -50,5 +50,6 @@ typedef enum response
 
 request_t* parse_request(const char* buf);
 size_t     format_response(const value_t value, char* buf, size_t buf_size);
+void       free_request(request_t* request);
 
 #endif

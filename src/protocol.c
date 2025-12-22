@@ -74,12 +74,22 @@ request_t* parse_request(const char* buf)
     value_t* value = NULL;
 
     request_t* request = malloc(sizeof(request_t));
+    char*      key     = malloc(sizeof(char) * 40);
+    key[0]             = '\0';
 
     char* cmd = strtok_r(buf_clone, " \n", &save_ptr);
 
+    if (cmd == NULL)
+        goto error;
+
     if (strcmp(cmd, "PUT") == 0)
     {
-        char* key = strtok_r(save_ptr, " ", &save_ptr);
+        char* key_tok = strtok_r(save_ptr, " ", &save_ptr);
+        if (key_tok == NULL)
+            goto error;
+
+        strcpy(key, key_tok);
+
         char* val = strtok_r(save_ptr, "\n", &save_ptr);
 
         value = parse_value(val);
@@ -87,25 +97,34 @@ request_t* parse_request(const char* buf)
         if (value == NULL)
             goto error;
 
-        if (!key || !val)
+        if (strlen(key) == 0 || !val)
             goto error;
 
-        request->action       = PUT;
-        request->detail.p.key = key;
+        request->action         = PUT;
+        request->detail.p.key   = key;
+        request->detail.p.value = *value;
+
+        free(value);
     }
     else if (strcmp(cmd, "GET") == 0)
     {
-        char* key = strtok_r(save_ptr, "\n", &save_ptr);
+        strcpy(key, strtok_r(save_ptr, "\n", &save_ptr));
 
-        if (!key)
+        if (strlen(key) == 0)
             goto error;
+
+        request->action       = GET;
+        request->detail.g.key = key;
     }
     else if (strcmp(cmd, "DELETE") == 0)
     {
-        char* key = strtok_r(save_ptr, "\n", &save_ptr);
+        strcpy(key, strtok_r(save_ptr, "\n", &save_ptr));
 
-        if (!key)
+        if (strlen(key) == 0)
             goto error;
+
+        request->action       = DELETE;
+        request->detail.g.key = key;
     }
     else
     {
@@ -158,4 +177,24 @@ size_t format_response(const value_t val, char* buf, size_t buf_size)
         return buf_size - 1;
 
     return (size_t)written;
+}
+
+void free_request(request_t* request)
+{
+    switch (request->action)
+    {
+    case PUT:
+        free(request->detail.p.key);
+        break;
+    case GET:
+        free(request->detail.g.key);
+        break;
+    case DELETE:
+        free(request->detail.d.key);
+        break;
+    default:
+        break;
+    }
+
+    free(request);
 }
